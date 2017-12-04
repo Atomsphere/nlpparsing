@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,16 +52,7 @@ public class Driver {
                         //if(nList.item(i).getNodeVa().equals("ISBN")){
                             isbn = nList.item(i).getTextContent();
                             if(isbn.length() == 13) {
-                                /*PrintWriter file = null;
-                                try{
-                                    file = new PrintWriter(new FileOutputStream("train.txt", true));
-                                    file.println(isbn + " ");
-                                    }catch(IOException e) {
-                                        e.printStackTrace();
-                                    }finally {
-                                     file.close();
-                                //We'll be appending to a string and outputting at end of a loop
-                                }*/
+
 
                                 found = true;
                             }
@@ -75,34 +67,34 @@ public class Driver {
             }
 
             if(found) {
-                int wordcount = 0;
-                int cc = 0;
-                int exitensial = 0;
-                int fw = 0;
-                int prep = 0;
-                int adj = 0;
-                int adjc = 0;
-                int adjs = 0;
-                int modal = 0;
-                int noun = 0;
-                int nounProper = 0;
-                int predet = 0;
-                int pronoun = 0;
-                int adverb = 0;
-                int advercom = 0;
-                int adverbsup = 0;
-                int particle = 0;
-                int interjection = 0;
-                int verb = 0;
-                int verbpast = 0;
-                int verbg = 0;
-                int verbthird = 0;
-                int determiner = 0;
-                int whpronoun = 0;
-                int poswhpronoun = 0;
-                int whadverb = 0;
-                int adverbcom = 0;
-                int verbfirst = 0;
+                double wordcount = 0;
+                double cc = 0;
+                double exitensial = 0;
+                double fw = 0;
+                double prep = 0;
+                double adj = 0;
+                double adjc = 0;
+                double adjs = 0;
+                double modal = 0;
+                double noun = 0;
+                double nounProper = 0;
+                double predet = 0;
+                double pronoun = 0;
+                double adverb = 0;
+                double advercom = 0;
+                double adverbsup = 0;
+                double particle = 0;
+                double interjection = 0;
+                double verb = 0;
+                double verbpast = 0;
+                double verbg = 0;
+                double verbthird = 0;
+                double determiner = 0;
+                double whpronoun = 0;
+                double poswhpronoun = 0;
+                double whadverb = 0;
+                double adverbcom = 0;
+                double verbfirst = 0;
 
                 for (File epub : folder) {
 
@@ -110,14 +102,17 @@ public class Driver {
 
                     String ext = epub.getAbsolutePath().substring(epub.getAbsolutePath().lastIndexOf('.') + 1);
 
-                    if (ext.equals(".html")) {
+                    if (ext.equals("html")) {
 
                         //try {
 
 
-                        String contents = new String(Files.readAllBytes(Paths.get(epub.getAbsolutePath())));
+                        String contents = new String(Files.readAllBytes(Paths.get(epub.getAbsolutePath())), StandardCharsets.UTF_8);
 
 
+                        //Files.lines(Path.get(epub.getAbsolutePath()), StandardCharsets.UTF_8).forEach(System.out::println);
+
+                        //System.out.println(contents);
                         // read some text in the text variable
                         //String text = "Tacos are amazing, and you suck at listening.";
 
@@ -142,10 +137,12 @@ public class Driver {
                                 // this is the NER label of the token
                                 String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
 
-                                System.out.println(String.format("Print: word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
+                                //System.out.println(String.format("Print: word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
                                 /*Control structure for collecting stats
                                 * commented cases are currently being ignored*/
-                                if(!pos.equals(".") && !pos.equals(",") && !pos.equals(";") && !pos.equals(":") && !pos.equals("\"") && !pos.equals("(") && !pos.equals(")"))
+                                if(!pos.equals(".") && !pos.equals(",") && !pos.equals(";") && !pos.equals(":") &&
+                                        !pos.equals("\"") && !pos.equals("(") && !pos.equals(")") && !word.substring(0, 0).equals("<")
+                                        && !word.equals("?") && !word.equals("!"))
                                     wordcount++;
                                 switch (pos) {
                                     case "CC": //coordinating conjunction
@@ -258,15 +255,100 @@ public class Driver {
                             }
                         }
 
-
-
                     }
                 }
 
+
                 if(wordcount > 0){
                     isbn += " ";
+                    isbn += wordcount;
+                    isbn += " ";
+                    isbn += cc/wordcount;
+                    isbn += " ";
+                    isbn += fw/wordcount;
+                    isbn += " ";
+                    isbn += prep/wordcount;
+                    isbn += " ";
+                    isbn += adj/wordcount;
+                    isbn += " ";
+                    if(adj > 0) {
+                        isbn += adjc / adj;
+                        isbn += " ";
+                        isbn += adjs / adj;
+                    }else{
+                        isbn += 0;
+                        isbn += " ";
+                        isbn += 0;
+                    }
+                    isbn += " ";
+                    isbn += modal/wordcount;
+                    isbn += " ";
+                    isbn += noun/wordcount;
+                    isbn += " ";
+                    isbn += nounProper/wordcount;
+                    isbn += " ";
+                    isbn += predet/wordcount;
+                    isbn += " ";
+                    isbn += pronoun/wordcount;
+                    isbn += " ";
+                    isbn += adverb/wordcount;
+                    isbn += " ";
+                    if(adverb > 0) {
+                        isbn += adverbcom / adverb;
+                        isbn += " ";
+                        isbn += adverbsup / adverb;
+                        isbn += " ";
+                        isbn += whadverb / adverb;
+                    }else{
+                        isbn += 0;
+                        isbn += " ";
+                        isbn += 0;
+                        isbn += " ";
+                        isbn += 0;
+                    }
+                    isbn += " ";
+                    isbn += particle/wordcount;
+                    isbn += " ";
+                    isbn += interjection/wordcount;
+                    isbn += " ";
+                    isbn += verb/wordcount;
+                    isbn += " ";
+                    if(verb > 0){
+                        isbn += verbfirst/verb;
+                        isbn += " ";
+                        isbn += verbg/verb;
+                        isbn += " ";
+                        isbn += verbpast/verb;
+                        isbn += " ";
+                        isbn += verbthird/verb;
+                    }else{
+                        isbn += 0;
+                        isbn += " ";
+                        isbn += 0;
+                        isbn += " ";
+                        isbn += 0;
+                        isbn += " ";
+                        isbn += 0;
+                    }
+                    isbn += " ";
+                    isbn += determiner/wordcount;
+                    isbn += " ";
+                    isbn += whpronoun/wordcount;
+                    isbn += " ";
+                    isbn += poswhpronoun/wordcount;
+                }else{
+                    isbn += " ";
+                    isbn += 0;
                 }
-                //call stat building info and print statements here
+                PrintWriter file = null;
+                try{
+                    file = new PrintWriter(new FileOutputStream("train.txt", true));
+                    file.println(isbn);
+                }catch(IOException e) {
+                    e.printStackTrace();
+                }finally {
+                    file.close();
+                }
             }
         }
 
