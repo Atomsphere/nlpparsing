@@ -25,7 +25,7 @@ public class Driver {
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
-        String isbn;
+        String isbn = null;
 
         //FileWriter file = new FileWriter("train.txt", true);
         //BufferedWriter writer = new BufferedWriter(file);
@@ -75,19 +75,54 @@ public class Driver {
             }
 
             if(found) {
+                int wordcount = 0;
+                int cc = 0;
+                int exitensial = 0;
+                int fw = 0;
+                int prep = 0;
+                int adj = 0;
+                int adjc = 0;
+                int adjs = 0;
+                int modal = 0;
+                int noun = 0;
+                int nounProper = 0;
+                int predet = 0;
+                int pronoun = 0;
+                int adverb = 0;
+                int advercom = 0;
+                int adverbsup = 0;
+                int particle = 0;
+                int interjection = 0;
+                int verb = 0;
+                int verbpast = 0;
+                int verbg = 0;
+                int verbthird = 0;
+                int determiner = 0;
+                int whpronoun = 0;
+                int poswhpronoun = 0;
+                int whadverb = 0;
+                int adverbcom = 0;
+                int verbfirst = 0;
+
                 for (File epub : folder) {
+
 
 
                     String ext = epub.getAbsolutePath().substring(epub.getAbsolutePath().lastIndexOf('.') + 1);
 
                     if (ext.equals(".html")) {
 
+                        //try {
+
+
+                        String contents = new String(Files.readAllBytes(Paths.get(epub.getAbsolutePath())));
+
 
                         // read some text in the text variable
-                        String text = "Tacos are amazing, and you suck at listening.";
+                        //String text = "Tacos are amazing, and you suck at listening.";
 
                         // create an empty Annotation just with the given text
-                        Annotation document = new Annotation(text);
+                        Annotation document = new Annotation(contents);
 
                         // run all Annotators on this text
                         pipeline.annotate(document);
@@ -108,60 +143,129 @@ public class Driver {
                                 String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
 
                                 System.out.println(String.format("Print: word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
-
-
+                                /*Control structure for collecting stats
+                                * commented cases are currently being ignored*/
+                                if(!pos.equals(".") && !pos.equals(",") && !pos.equals(";") && !pos.equals(":") && !pos.equals("\"") && !pos.equals("(") && !pos.equals(")"))
+                                    wordcount++;
                                 switch (pos) {
                                     case "CC": //coordinating conjunction
+                                        cc++;
                                         break;
-                                    case "CD": //cardinal number
-                                        break;
-                                    case "DT": //determiner
-                                        break;
-                                    case "EX": //existensial "there"
+                                    //case "CD": //cardinal number
+                                     //   break;
+                                    //case "DT": //determiner
+                                        //break;
+                                    case "EX": //existensial "there" I want to use this, but how? exitensials/word?
+                                        exitensial++;
                                         break;
                                     case "FW": //foreign word
+                                        fw++;
                                         System.out.println(String.format("foreign word: %S\n", word));
                                         break;
                                     case "IN": //Preposition or subordinating conjunction
+                                        prep++;
                                         break;
                                     case "JJ":  //adjective
+                                        adj++;
+                                        break;
                                     case "JJR": //Adjective, comparative
+                                        adj++;
+                                        adjc++;
+                                        break;
                                     case "JJS": //Adjective, superlative
-                                    case "LS":  //List item marker
+                                        adj++;
+                                        adjs++;
+                                        break;
+                                    //case "LS":  //List item marker
                                     case "MD":  //Modal
+                                        modal++;
+                                        break;
                                     case "NN":    //Noun, singular or mass
                                     case "NNS":    //Noun, plural
+                                        noun++;
+                                        break;
                                     case "NNP":    //Proper noun, singular
                                     case "NNPS":    //Proper noun, plural
+                                        noun++;
+                                        nounProper++; // propernoun/noun
+                                        break;
                                     case "PDT":    //Predeterminer
-                                    case "POS":    //Possessive ending
+                                        predet++;
+                                        break;
+                                    //case "POS":    //Possessive ending
                                     case "PRP":    //Personal pronoun
                                     case "PRP$":    //Possessive pronoun
+                                        pronoun++;
+                                        break;
                                     case "RB":    //Adverb
+                                        adverb++;
+                                        break;
                                     case "RBR":    //Adverb, comparative
+                                        adverb++;
+                                        adverbcom++;
+                                        break;
                                     case "RBS":    //Adverb, superlative
+                                        adverb++;
+                                        adverbsup++;
+                                        break;
                                     case "RP":    //Particle
-                                    case "SYM":    //Symbol
-                                    case "TO":    //to
+                                        particle++;
+                                        break;
+                                    //case "SYM":    //Symbol
+                                    //case "TO":    //to
                                     case "UH":    //Interjection
+                                        interjection++;
+                                        break;
                                     case "VB":    //Verb, base form
+                                        verb++;
+                                        break;
                                     case "VBD":    //Verb, past tense
+                                        verbpast++;
+                                        verb++;
+                                        break;
                                     case "VBG":    //Verb, gerund or present participle
+                                        verbg++;
+                                        verb++;
+                                        break;
                                     case "VBN":    //Verb, past participle
+                                        verb++;
+                                        verbpast++;
+                                        break;
                                     case "VBP":    //Verb, non-3rd person singular present
+                                        verbfirst++;
+                                        verb++;
+                                        break;
                                     case "VBZ":    //Verb, 3rd person singular present
+                                        verbthird++;
+                                        verb++;
+                                        break;
                                     case "WDT":    //Wh-determiner
+                                        determiner++;
+                                        break;
                                     case "WP":    //Wh-pronoun
+                                        pronoun++;
+                                        whpronoun++;
+                                        break;
                                     case "WP$":    //Possessive wh-pronoun
+                                        pronoun++;
+                                        poswhpronoun++;
+                                        break;
                                     case "WRB":    //Wh-adverb
+                                        adverb++;
+                                        whadverb++;
+                                        break;
                                 }
                             }
                         }
 
 
+
                     }
                 }
 
+                if(wordcount > 0){
+                    isbn += " ";
+                }
                 //call stat building info and print statements here
             }
         }
