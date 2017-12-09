@@ -7,17 +7,49 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class Driver {
+
+    static ArrayList<RatingInfo> ratings = new ArrayList();
+
+    static void createList(){
+        File shortList = new File("shortlist.dat");
+
+        String dat = null;
+        try {
+            dat = new String(Files.readAllBytes(Paths.get(shortList.getAbsolutePath())), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String lines[] = dat.split("\\r?\\n");
+
+        for(String line : lines){
+            RatingInfo rating = new RatingInfo(line);
+            ratings.add(rating);
+        }
+    }
+
+    static boolean inShortList(String isbn){
+
+        for(RatingInfo rate : ratings){
+            if(rate.isbn.equals(isbn))
+                return true;
+        }
+        return false;
+    }
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-        // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution
 
         ExecutorService threadpool = Executors.newFixedThreadPool(8);
 
         String isbn = null;
+
+        createList();
 
         File[] dir = new File("/home/mark/Documents/epub").listFiles();
         for (File folders : dir) {
@@ -38,7 +70,7 @@ public class Driver {
                     for (int i = 0; i < nList.getLength(); ++i) {
                         isbn = nList.item(i).getTextContent();
                         if (isbn.length() == 13) {
-                            found = true;
+                            found = inShortList(isbn);
                             break;
                         }
                     }
