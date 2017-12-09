@@ -1,3 +1,5 @@
+
+
 public class RatingInfo {
 
     public String isbn;
@@ -10,6 +12,7 @@ public class RatingInfo {
         isbn = temp[0];
         rating = temp[1];
         count = temp[2];
+        System.out.println("isbn: " + isbn + "rating: " + rating + "count: " + count + "\n");
     }
 
 }
