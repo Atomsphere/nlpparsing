@@ -18,6 +18,7 @@ public class Driver {
 
     static ArrayList<RatingInfo> ratings = new ArrayList();
 
+
     static void createList(){
         File shortList = new File("shortlist.dat");
 
@@ -35,19 +36,15 @@ public class Driver {
         }
     }
 
-    static boolean inShortList(String isbn){
 
-        for(RatingInfo rate : ratings){
-            if(rate.isbn.equals(isbn))
-                return true;
-        }
-        return false;
-    }
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-
+        int round = 0;
         ExecutorService threadpool = Executors.newFixedThreadPool(8);
 
         String isbn = null;
+
+        String rating = null;
+        String count = null;
 
         createList();
 
@@ -70,7 +67,15 @@ public class Driver {
                     for (int i = 0; i < nList.getLength(); ++i) {
                         isbn = nList.item(i).getTextContent();
                         if (isbn.length() == 13) {
-                            found = inShortList(isbn);
+                            for(RatingInfo rate : ratings){
+                                if(rate.isbn.equals(isbn)) {
+                                    rating = rate.rating;
+                                    count = rate.count;
+                                    found = true;
+                                }
+                            }
+
+
                             break;
                         }
                     }
@@ -87,20 +92,23 @@ public class Driver {
 
                     if (ext.equals("html")) {
                         if (fileSize < epub.getAbsoluteFile().length()) {
-                            fileSize = epub.getAbsoluteFile().length();
-                            temp = new File(epub.getAbsolutePath());
-                            flag = true;
+                            if(epub.getAbsoluteFile().length() / 1024 > 5 && epub.getAbsoluteFile().length() / 1024 < 20) {
+                                fileSize = epub.getAbsoluteFile().length();
+                                temp = new File(epub.getAbsolutePath());
+                                flag = true;
+                            }
                         }
                     }
                 }
+
+
                 if (flag) {
-                    Runnable r = new Page(isbn, temp);
+                    round++;
+                    //System.out.println("File size is: " + fileSize + "\nRound number: " + ++round);
+                    Runnable r = new Page(isbn, temp, rating, count, round);
                     threadpool.submit(r);
                 }
             }
         }
     }
 }
-
-
-//}

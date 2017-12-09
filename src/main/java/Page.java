@@ -51,19 +51,26 @@ public class Page implements Runnable {
     String isbn;
     String contents = null;
     File file;
+    String rating;
+    String count;
+    int round;
 
 
 
-    public Page(String isbn, File file){
+    public Page(String isbn, File file, String rating, String count, int round){
         this.file = file;
         this.isbn = isbn;
         props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
         pipeline = new StanfordCoreNLP(props);
+        this.rating = rating;
+        this.count = count;
+        this.round = round;
+
     }
 
     public void run() {
-        System.out.println("Processing " + file.getAbsoluteFile() + "\n");
+        System.out.println(round + ": Processing " + file.getAbsoluteFile() + "\n");
 
         String html = null;
         try {
@@ -224,6 +231,10 @@ public class Page implements Runnable {
 
         if (wordcount > 0) {
             isbn += " ";
+            isbn += rating;
+            isbn += " ";
+            isbn += count;
+            isbn += " ";
             isbn += wordcount;
             isbn += " ";
             isbn += cc / wordcount;
@@ -306,7 +317,7 @@ public class Page implements Runnable {
             isbn += 0;
         }
         printResults();
-        System.out.println("Done processing " + file.getAbsoluteFile() + "\n");
+        System.out.println(round + ": Done processing " + file.getAbsoluteFile() + "\n");
     }
 
     public void printResults(){
