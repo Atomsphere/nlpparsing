@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static sun.misc.Version.println;
+
 public class Page implements Runnable {
     Properties props;
     //props.put("threads", "8");
@@ -304,6 +306,7 @@ public class Page implements Runnable {
             isbn += 0;
         }
         printResults();
+        System.out.println("Done processing " + file.getAbsoluteFile() + "\n");
     }
 
     public void printResults(){

@@ -95,8 +95,6 @@ public class Driver {
                 }
                 if (flag) {
                     Runnable r = new Page(isbn, temp);
-                    //new Thread(r).start();
-
                     threadpool.submit(r);
                 }
             }
