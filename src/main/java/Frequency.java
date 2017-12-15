@@ -1,3 +1,8 @@
+/**
+ * Implemented for school.
+ * Ratings -> text file -> SVM -> subjective prediction
+ */
+
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -15,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static sun.misc.Version.println;
 
-public class Page implements Runnable {
+public class Frequency implements Runnable {
     Properties props;
     //props.put("threads", "8");
     StanfordCoreNLP pipeline;
@@ -57,12 +62,12 @@ public class Page implements Runnable {
 
 
 
-    public Page(String isbn, File file, String rating, String count, int round){
+    public Frequency(String isbn, File file, String rating, String count, int round, StanfordCoreNLP pipeline){
         this.file = file;
         this.isbn = isbn;
         props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
-        pipeline = new StanfordCoreNLP(props);
+        this.pipeline = pipeline;
         this.rating = rating;
         this.count = count;
         this.round = round;
@@ -113,6 +118,7 @@ public class Page implements Runnable {
                 //System.out.println(String.format("Print: word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
                 /*Control structure for collecting stats
                  * commented cases are currently being ignored*/
+                System.out.println(word + "\n");
                 if (!pos.equals(".") && !pos.equals(",") && !pos.equals(";") && !pos.equals(":") &&
                         !pos.equals("\"") && !pos.equals("(") && !pos.equals(")") && !word.substring(0, 0).equals("<")
                         && !word.equals("?") && !word.equals("!"))
@@ -320,6 +326,9 @@ public class Page implements Runnable {
         System.out.println(round + ": Done processing " + file.getAbsoluteFile() + "\n");
     }
 
+    /**
+     * printResults- needs implementation for dynamic data files
+     */
     public void printResults(){
         ReentrantLock aLock = new ReentrantLock();
         aLock.lock();

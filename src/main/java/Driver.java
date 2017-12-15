@@ -1,3 +1,7 @@
+/**
+ * Driver stuff.
+ */
+
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -106,7 +110,7 @@ public class Driver {
                 if (flag) {
                     round++;
                     //System.out.println("File size is: " + fileSize + "\nRound number: " + ++round);
-                    Runnable r = new Page(isbn, temp, rating, count, round, pipeline);
+                    Runnable r = new Frequency(isbn, temp, rating, count, round, pipeline);
                     threadpool.submit(r);
                 }
             }
