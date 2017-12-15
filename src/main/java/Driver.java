@@ -1,3 +1,4 @@
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -17,7 +18,7 @@ import java.util.concurrent.Executors;
 public class Driver {
 
     static ArrayList<RatingInfo> ratings = new ArrayList();
-
+    static StanfordCoreNLP pipeline = new StanfordCoreNLP();
 
     static void createList(){
         File shortList = new File("shortlist.dat");
@@ -105,7 +106,7 @@ public class Driver {
                 if (flag) {
                     round++;
                     //System.out.println("File size is: " + fileSize + "\nRound number: " + ++round);
-                    Runnable r = new Page(isbn, temp, rating, count, round);
+                    Runnable r = new Page(isbn, temp, rating, count, round, pipeline);
                     threadpool.submit(r);
                 }
             }
